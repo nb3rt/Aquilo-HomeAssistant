@@ -34,7 +34,7 @@ no YAML, no template hacks.
 ### HACS (custom repository)
 
 1. HACS → ⋮ → **Custom repositories**.
-2. Add `https://github.com/nb3rt/Aquilo-HomeAssistant-HACS` with category **Integration**.
+2. Add `https://github.com/nb3rt/Aquilo-HomeAssistant` with category **Integration**.
 3. Install **Aquilo**, then restart Home Assistant.
 
 ### Manual
