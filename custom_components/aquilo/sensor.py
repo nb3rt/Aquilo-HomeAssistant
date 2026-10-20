@@ -15,15 +15,14 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import PERCENTAGE, UnitOfLength, UnitOfTime
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
 from . import AquiloConfigEntry
-from .const import DOMAIN, MANUFACTURER, MODEL
+from .const import CONF_EXCLUDED_SENSORS
 from .coordinator import AquiloDataUpdateCoordinator
+from .entity import AquiloEntity
 
 
 def _parse_dt(value: Any) -> datetime | None:
@@ -104,22 +103,21 @@ async def async_setup_entry(
 ) -> None:
     """Set up Aquilo sensors from a config entry."""
     coordinator = entry.runtime_data
+    excluded = set(entry.options.get(CONF_EXCLUDED_SENSORS, []))
 
     entities = [
         AquiloSensor(coordinator, sensor_id, description)
         for sensor_id in coordinator.data
+        if sensor_id not in excluded
         for description in SENSOR_TYPES
     ]
     async_add_entities(entities)
 
 
-class AquiloSensor(
-    CoordinatorEntity[AquiloDataUpdateCoordinator], SensorEntity
-):
+class AquiloSensor(AquiloEntity, SensorEntity):
     """A single Aquilo sensor reading for one device."""
 
     entity_description: AquiloSensorEntityDescription
-    _attr_has_entity_name = True
 
     def __init__(
         self,
@@ -128,29 +126,9 @@ class AquiloSensor(
         description: AquiloSensorEntityDescription,
     ) -> None:
         """Initialize the sensor."""
-        super().__init__(coordinator)
-        self._sensor_id = sensor_id
+        super().__init__(coordinator, sensor_id)
         self.entity_description = description
         self._attr_unique_id = f"{sensor_id}_{description.key}"
-
-        name = self._sensor_data.get("name") or f"Aquilo {sensor_id}"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, sensor_id)},
-            name=name,
-            manufacturer=MANUFACTURER,
-            model=MODEL,
-            configuration_url="https://www.aquilo.pl",
-        )
-
-    @property
-    def _sensor_data(self) -> dict[str, Any]:
-        """Return this device's slice of the coordinator data."""
-        return self.coordinator.data.get(self._sensor_id, {})
-
-    @property
-    def available(self) -> bool:
-        """Return True if the device is still present in the latest payload."""
-        return super().available and self._sensor_id in self.coordinator.data
 
     @property
     def native_value(self) -> StateType | datetime:

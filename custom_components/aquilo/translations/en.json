@@ -24,12 +24,25 @@
       "init": {
         "title": "Aquilo options",
         "data": {
-          "scan_interval": "Update interval (seconds)"
+          "scan_interval": "Update interval (seconds)",
+          "stale_hours": "Stale-data alert after (hours)",
+          "overflow_pct": "Overflow-risk threshold (%)"
+        }
+      },
+      "sensors": {
+        "title": "Exclude sensors",
+        "description": "Checked sensors are removed from Home Assistant together with their device and are not recreated until unchecked.",
+        "data": {
+          "excluded_sensors": "Excluded sensors"
         }
       }
     }
   },
   "entity": {
+    "binary_sensor": {
+      "stale_data": { "name": "Stale data" },
+      "overflow_risk": { "name": "Overflow risk" }
+    },
     "sensor": {
       "lvl": { "name": "Level" },
       "pct": { "name": "Percent full" },

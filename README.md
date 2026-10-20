@@ -25,9 +25,16 @@ no YAML, no template hacks.
   | Distance to full | `lvlToFull` | cm | disabled by default |
   | Last read | `lstRead` | — | `device_class: timestamp` (shows "x ago") |
   | Last emptied | `lstEmpty` | — | `device_class: timestamp` |
+  | Stale data | `lstRead` | — | binary, `problem`, diagnostic; on when no reading for *N* hours (default 24) |
+  | Overflow risk | `pct` | — | binary, `problem`; on at or above *N* % (default 90) |
 
 - Polling interval defaults to **15 minutes** (the device refreshes on its own
   schedule) and is adjustable via the integration's **Configure** button.
+- **Stale data** catches a sensor that stopped reporting (flat battery, lost
+  radio link): the device keeps serving its last reading, so every other entity
+  still looks healthy.
+- Sensors you do not want (e.g. a second tank on the same gateway) can be
+  excluded; their device and entities are removed.
 
 ## Installation
 
@@ -47,8 +54,10 @@ directory and restart.
 **Settings → Devices & Services → Add Integration → Aquilo**, then enter the
 device's IP address or hostname (e.g. `192.168.1.246`).
 
-To change the polling interval later: open the integration and click
-**Configure**.
+To change options later, open the integration and click **Configure**:
+
+1. Polling interval, stale-data threshold (hours) and overflow-risk threshold (%).
+2. Sensors to exclude. Unchecking a sensor brings it back after the reload.
 
 ## Example dashboard (Sections view)
 

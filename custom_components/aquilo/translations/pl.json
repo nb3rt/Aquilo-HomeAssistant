@@ -24,12 +24,25 @@
       "init": {
         "title": "Opcje Aquilo",
         "data": {
-          "scan_interval": "Interwał odświeżania (sekundy)"
+          "scan_interval": "Interwał odświeżania (sekundy)",
+          "stale_hours": "Alarm nieaktualnych danych po (godzinach)",
+          "overflow_pct": "Próg ryzyka przepełnienia (%)"
+        }
+      },
+      "sensors": {
+        "title": "Wyklucz czujniki",
+        "description": "Zaznaczone czujniki zostaną usunięte z Home Assistanta razem z urządzeniem i nie wrócą, dopóki ich nie odznaczysz.",
+        "data": {
+          "excluded_sensors": "Wykluczone czujniki"
         }
       }
     }
   },
   "entity": {
+    "binary_sensor": {
+      "stale_data": { "name": "Nieaktualne dane" },
+      "overflow_risk": { "name": "Ryzyko przepełnienia" }
+    },
     "sensor": {
       "lvl": { "name": "Poziom" },
       "pct": { "name": "Zapełnienie" },
